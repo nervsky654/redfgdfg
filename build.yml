@@ -1,0 +1,45 @@
+name: Build mod
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check project structure
+        run: |
+          for f in build.gradle settings.gradle \
+            src/main/resources/META-INF/neoforge.mods.toml \
+            src/main/resources/create_no_cart_drill.mixins.json \
+            src/main/java/com/example/cncd/CreateNoCartDrill.java \
+            src/main/java/com/example/cncd/mixin/LightTextureMixin.java; do
+            test -f "$f" || { echo "::error::Missing $f - files were uploaded without folders"; exit 1; }
+          done
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+
+      - name: Build
+        run: gradle build --no-daemon
+
+      - name: Check jar contents
+        run: |
+          unzip -l build/libs/*.jar
+          unzip -l build/libs/*.jar | grep -q "META-INF/neoforge.mods.toml" || { echo "::error::jar has no neoforge.mods.toml"; exit 1; }
+          unzip -l build/libs/*.jar | grep -q "com/example/cncd/mixin/LightTextureMixin.class" || { echo "::error::jar has no mixin class"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mod-jar
+          path: build/libs/*.jar

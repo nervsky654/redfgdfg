@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="create_no_cart_drill"
+version="1.2.0"
+displayName="Create: No Cart Assembler & Drill + Dark Nights"
+description='''Disables the crafting recipes of the Create Cart Assembler and the Mechanical Drill, and makes nights darker (client side, sky light only, compatible with dynamic light mods).'''
+authors="user"
+
+[[mixins]]
+config="create_no_cart_drill.mixins.json"
+
+[[dependencies.create_no_cart_drill]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.create_no_cart_drill]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.create_no_cart_drill]]
+modId="create"
+type="required"
+versionRange="[6.0.0,)"
+ordering="AFTER"
+side="BOTH"
